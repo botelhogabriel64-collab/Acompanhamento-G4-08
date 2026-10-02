@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1B2220">
+<title>Obra Alphaville Terras 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: canteiro de obra — cabeçalho tipo placa de obra, abas fixas, lista de etapas por fase, folha inferior para formulários */
+:root{
+  --bg:#E9EBEA; --surface:#F7F8F7; --surface-2:#DFE2E1; --line:#C9CECC;
+  --ink:#1B2220; --muted:#5A6562; --accent:#B8740A; --accent-ink:#FFFFFF; --accent-soft:#F3E3C4;
+  --ok:#2F7A4F; --ok-soft:#D7EBDF; --warn:#A8620B; --warn-soft:#F5E4C8; --bad:#A63A2E; --bad-soft:#F2D9D5; --info:#2D5F86; --info-soft:#D6E4EF;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141917; --surface:#1D2421; --surface-2:#262F2B; --line:#36413C;
+  --ink:#E8ECEA; --muted:#9AA6A1; --accent:#E3A33A; --accent-ink:#1B1406; --accent-soft:#3A2E17;
+  --ok:#6CC08F; --ok-soft:#1E3427; --warn:#E3A33A; --warn-soft:#3A2E17; --bad:#E07B6E; --bad-soft:#3B2220; --info:#7FB2DA; --info-soft:#1D2D3A;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141917; --surface:#1D2421; --surface-2:#262F2B; --line:#36413C;
+  --ink:#E8ECEA; --muted:#9AA6A1; --accent:#E3A33A; --accent-ink:#1B1406; --accent-soft:#3A2E17;
+  --ok:#6CC08F; --ok-soft:#1E3427; --warn:#E3A33A; --warn-soft:#3A2E17; --bad:#E07B6E; --bad-soft:#3B2220; --info:#7FB2DA; --info-soft:#1D2D3A;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;padding:0 16px;padding-block:0 96px}
+.wrap{max-width:760px;margin:0 auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Placa da obra */
+.placa{margin-top:16px;background:var(--ink);color:var(--bg);border-radius:var(--r);padding:18px 18px 16px;display:grid;gap:14px;position:relative;overflow:hidden}
+.placa::after{content:"";position:absolute;right:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(-45deg,var(--accent) 0 8px,transparent 8px 16px)}
+.eyebrow{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:600;opacity:.75}
+.placa h1{margin:2px 0 0;font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.05;letter-spacing:.01em;text-wrap:balance}
+.placa .sub{font-size:13px;opacity:.75}
+.prog{display:grid;gap:6px;padding-right:14px}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--f-display);font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+.prog-top b{font-size:22px;color:var(--accent)}
+.bar{height:8px;border-radius:4px;background:color-mix(in srgb,var(--bg) 18%,transparent);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .4s}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding-right:14px}
+.stat{display:grid;gap:2px;min-width:0}
+.stat span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.7;font-family:var(--f-display);font-weight:600}
+.stat b{font-family:var(--f-display);font-size:19px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Abas */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;padding:12px 0 10px;margin-top:4px}
+.tab{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 6px;font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.banner{margin:8px 0;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--ink);font-size:13px}
+
+/* Fases e etapas */
+.fase{margin-top:18px}
+.fase-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:4px;margin-bottom:8px}
+.fase-h h2{margin:0;font-family:var(--f-display);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.fase-h small{color:var(--muted);font-size:13px}
+.etapa{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px}
+.etapa-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px}
+.etapa-name{min-width:0;background:none;border:0;text-align:left;padding:4px 0;display:grid;gap:1px}
+.etapa-name strong{font-weight:600;font-size:15px}
+.etapa-name.done strong{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.etapa-name small{color:var(--muted);font-size:12.5px}
+.etapa-val{font-family:var(--f-display);font-weight:600;font-size:16px;text-align:right;white-space:nowrap}
+.chk{width:30px;height:30px;border-radius:7px;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;padding:0}
+.chk svg{width:16px;height:16px}
+.chk[data-s="andamento"]{border-color:var(--warn);background:var(--warn-soft)}
+.chk[data-s="concluido"]{border-color:var(--ok);background:var(--ok)}
+.chk[data-s="concluido"] svg path{stroke:var(--surface)}
+.pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;font-family:var(--f-display)}
+.p-pendente{background:var(--surface-2);color:var(--muted)}
+.p-andamento{background:var(--warn-soft);color:var(--warn)}
+.p-concluido{background:var(--ok-soft);color:var(--ok)}
+.p-cotado{background:var(--info-soft);color:var(--info)}
+.p-aprovado{background:var(--warn-soft);color:var(--warn)}
+.p-pago{background:var(--ok-soft);color:var(--ok)}
+.p-recusado{background:var(--bad-soft);color:var(--bad)}
+.detail{border-top:1px dashed var(--line);padding:10px 12px 12px;display:grid;gap:10px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:600}
+.statusset{display:flex;gap:6px;flex-wrap:wrap}
+.statusset button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px}
+.statusset button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.obs{font-size:13.5px;white-space:pre-wrap;margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;font-weight:500;font-size:14px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.btn.ghost{background:none}
+.add-etapa{width:100%;margin-top:16px;border:2px dashed var(--line);background:none;border-radius:var(--r);padding:12px;color:var(--muted);font-weight:600}
+
+/* Orçamentos */
+.orc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;display:grid;gap:4px}
+.orc + .orc{margin-top:8px}
+.orc-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.orc-top strong{font-weight:600;min-width:0}
+.orc-val{font-family:var(--f-display);font-size:18px;font-weight:600;white-space:nowrap}
+.orc-sub{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 12px}
+.orc.best{border-color:var(--ok)}
+.best-tag{font-size:11px;color:var(--ok);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-family:var(--f-display)}
+.orc .actions{margin-top:4px}
+.orc .btn{padding:5px 10px;font-size:13px}
+.inner-list{display:grid;gap:0}
+.inner-list .orc{background:var(--bg)}
+.toolbar{display:grid;gap:8px;margin-top:6px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.search{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 12px}
+.list{margin-top:12px}
+.empty{margin-top:16px;padding:22px 16px;border:2px dashed var(--line);border-radius:var(--r);text-align:center;color:var(--muted);display:grid;gap:10px;justify-items:center}
+.empty strong{color:var(--ink);font-family:var(--f-display);font-size:18px;text-transform:uppercase;letter-spacing:.04em}
+
+/* Resumo */
+.sec-h{font-family:var(--f-display);font-size:18px;text-transform:uppercase;letter-spacing:.05em;margin:20px 0 8px;font-weight:700}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+th{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:12px;color:var(--muted);font-weight:600}
+tfoot td{font-weight:700;border-bottom:0}
+.over{color:var(--bad)}
+.next{display:grid;gap:6px}
+.next li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px;display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.next{padding:0;margin:0}
+
+/* FAB + folha */
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:8;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 20px;font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.scrim{position:fixed;inset:0;background:rgba(10,14,12,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+.sheet h3{margin:0;font-family:var(--f-display);font-size:22px;text-transform:uppercase;letter-spacing:.04em}
+.field{display:grid;gap:4px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:10px 12px;min-width:0}
+.field textarea{min-height:70px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.grid2{grid-template-columns:1fr}}
+.err{color:var(--bad);font-size:13px;margin:0}
+.confirm{background:var(--bad-soft);border-radius:8px;padding:10px 12px;display:grid;gap:8px;font-size:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;z-index:30}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* base */
+html{color-scheme:light}
+body{margin:0;-webkit-font-smoothing:antialiased;padding-top:env(safe-area-inset-top,0px)}
+img{max-width:100%}
+[hidden]{display:none!important}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 0}
+.login-card{width:100%;max-width:380px;display:grid;gap:14px}
+.login-card .placa{margin:0}
+.login-form{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 16px;display:grid;gap:12px}
+.login-form h2{margin:0;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;font-size:20px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;padding:4px 0;font-size:13px;justify-self:start}
+.userbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-right:14px;font-size:13px}
+.userbar span{opacity:.75;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.userbar button{background:none;border:1px solid color-mix(in srgb,var(--bg) 35%,transparent);color:var(--bg);border-radius:999px;padding:4px 12px;font-size:13px}
+.ok-msg{color:var(--ok);font-size:13px;margin:0}
+.membro{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;display:grid;gap:6px}
+.membro + .membro{margin-top:8px}
+.membro select{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px}
+</style>
+</head>
+<body>
+
+<div class="wrap login" id="login" hidden>
+  <div class="login-card">
+    <header class="placa">
+      <div>
+        <div class="eyebrow">Alphaville Terras 4 · Eusébio-CE</div>
+        <h1>Controle da obra</h1>
+        <div class="sub">Acesso restrito à equipe da obra.</div>
+      </div>
+    </header>
+    <form class="login-form" id="f-login" novalidate>
+      <h2>Entrar</h2>
+      <div class="field"><label for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="l-senha">Senha</label><input id="l-senha" type="password" autocomplete="current-password" required></div>
+      <p class="err" id="l-err" hidden></p>
+      <p class="ok-msg" id="l-ok" hidden></p>
+      <button class="btn primary" type="submit" id="l-btn">Entrar</button>
+      <button class="linkbtn" type="button" id="l-reset">Esqueci minha senha</button>
+    </form>
+  </div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header class="placa">
+    <div class="userbar"><span id="who"></span><button type="button" id="logout">Sair</button></div>
+    <div>
+      <div class="eyebrow">Alphaville Terras 4 · Cidade Alpha · Eusébio-CE</div>
+      <h1>Residência alto padrão · 274 m²</h1>
+      <div class="sub" id="sub">Carregando dados da obra…</div>
+    </div>
+    <div class="prog">
+      <div class="prog-top"><span>Etapas concluídas</span><b class="num" id="pct">–</b></div>
+      <div class="bar"><i id="pctbar" style="width:0%"></i></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span>Contratado</span><b class="num" id="sContr">–</b></div>
+      <div class="stat"><span>Pago</span><b class="num" id="sPago">–</b></div>
+      <div class="stat"><span>Em cotação</span><b class="num" id="sCot">–</b></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-etapas" data-v="etapas" aria-selected="true">Etapas</button>
+    <button class="tab" role="tab" id="tab-orc" data-v="orc" aria-selected="false">Orçamentos</button>
+    <button class="tab" role="tab" id="tab-resumo" data-v="resumo" aria-selected="false">Resumo</button>
+    <button class="tab" role="tab" id="tab-equipe" data-v="equipe" aria-selected="false" hidden>Equipe</button>
+  </nav>
+  <div id="banner"></div>
+  <main id="view"></main>
+</div>
+<button class="fab" id="fab" type="button">+ Orçamento</button>
+<div id="modal"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ===== CONFIGURAÇÃO DO FIREBASE — substitua pelos dados do seu projeto ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBkSkwhCqKgnqp0NyGdZfIKkFFaCry3fu4",
+  authDomain: "obra-alpha-terras-4---g4-08.firebaseapp.com",
+  projectId: "obra-alpha-terras-4---g4-08",
+  storageBucket: "obra-alpha-terras-4---g4-08.firebasestorage.app",
+  messagingSenderId: "273642573545",
+  appId: "1:273642573545:web:b7328b23cdeb5f05cbaa78"
+};
+/* E-mail do administrador principal (o mesmo das regras do Firestore) */
+const ADMIN_EMAIL = "botelhogabriel64@gmail.com";
+/* ========================================================================== */
+const SEED=[["e01", "Fundação", "Estrutura e vedação", "concluido", 1], ["e02", "Estrutura (pilares, vigas e lajes)", "Estrutura e vedação", "concluido", 2], ["e03", "Alvenaria", "Estrutura e vedação", "concluido", 3], ["e04", "Cobertura / telhado", "Estrutura e vedação", "concluido", 4], ["e05", "Impermeabilização (lajes, baldrames e áreas molhadas)", "Estrutura e vedação", "concluido", 5], ["e06", "Instalações elétricas embutidas", "Instalações e base", "concluido", 1], ["e07", "Instalações hidrossanitárias", "Instalações e base", "concluido", 2], ["e08", "Infraestrutura de ar-condicionado", "Instalações e base", "concluido", 3], ["e09", "Cabeamento de dados, CFTV e automação", "Instalações e base", "concluido", 4], ["e10", "Reboco interno e externo", "Instalações e base", "concluido", 5], ["e11", "Contrapiso", "Instalações e base", "concluido", 6], ["e12", "Gesso: forros, sancas e tabicas", "Acabamentos", "pendente", 1], ["e13", "Porcelanato de piso", "Acabamentos", "concluido", 2], ["e14", "Revestimentos de parede (banheiros, cozinha, gourmet)", "Acabamentos", "concluido", 3], ["e15", "Bancadas em pedra (granito / quartzo)", "Acabamentos", "pendente", 4], ["e16", "Esquadrias de alumínio e vidros", "Acabamentos", "pendente", 5], ["e17", "Portas internas e porta pivotante", "Acabamentos", "pendente", 6], ["e18", "Pintura (massa, selador e tinta)", "Acabamentos", "pendente", 7], ["e19", "Louças e metais", "Acabamentos", "pendente", 8], ["e20", "Acabamento elétrico e iluminação", "Acabamentos", "pendente", 9], ["e21", "Equipamentos de ar-condicionado", "Acabamentos", "pendente", 10], ["e22", "Marcenaria / móveis planejados", "Acabamentos", "pendente", 11], ["e23", "Box, espelhos e guarda-corpos", "Acabamentos", "pendente", 12], ["e24", "Fachada (revestimento / textura)", "Acabamentos", "pendente", 13], ["e25", "Piscina (revestimento e equipamentos)", "Área externa e entrega", "pendente", 1], ["e26", "Paisagismo e calçadas", "Área externa e entrega", "pendente", 2], ["e27", "Limpeza final da obra", "Área externa e entrega", "pendente", 3], ["e28", "Vistoria do condomínio e entrega", "Área externa e entrega", "pendente", 4]];
+const FASES = ["Estrutura e vedação","Instalações e base","Acabamentos","Área externa e entrega"];
+const ETAPA_ST = {pendente:"A fazer",andamento:"Em andamento",concluido:"Concluída"};
+const ORC_ST = {cotado:"Cotado",aprovado:"Aprovado",pago:"Pago",recusado:"Recusado"};
+const S = {etapas:[],orcs:[],view:"etapas",open:new Set(),filter:"todos",q:"",ready:{e:false,o:false},db:null,canWrite:true,confirmDel:null};
+
+const brl = v => (Number(v)||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+const brl2 = v => (Number(v)||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fdate = d => { if(!d) return ""; const [y,m,dd]=d.split("-"); return `${dd}/${m}/${y}`; };
+const $ = id => document.getElementById(id);
+const isContr = o => o.status==="aprovado"||o.status==="pago";
+function toast(msg){const t=$("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200);}
+function parseValor(s){ if(typeof s==="number") return s; s=String(s||"").replace(/[R$\s]/g,""); if(s.includes(",")) s=s.replace(/\./g,"").replace(",","."); const n=parseFloat(s); return isNaN(n)?0:n; }
+
+const CHECK = '<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const DOTS = '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="currentColor"/></svg>';
+
+function etapaById(id){return S.etapas.find(e=>e.id===id);}
+function orcsOf(id){return S.orcs.filter(o=>o.etapaId===id);}
+function contrOf(id){return orcsOf(id).filter(isContr).reduce((a,o)=>a+(o.valor||0),0);}
+
+function renderHeader(){
+  const tot=S.etapas.length, done=S.etapas.filter(e=>e.status==="concluido").length;
+  const pct = tot?Math.round(done/tot*100):0;
+  $("pct").textContent = tot? pct+"%":"–"; $("pctbar").style.width=pct+"%";
+  const contr=S.orcs.filter(isContr).reduce((a,o)=>a+(o.valor||0),0);
+  const pago=S.orcs.filter(o=>o.status==="pago").reduce((a,o)=>a+(o.valor||0),0);
+  const cot=S.orcs.filter(o=>o.status==="cotado").reduce((a,o)=>a+(o.valor||0),0);
+  $("sContr").textContent=brl(contr); $("sPago").textContent=brl(pago); $("sCot").textContent=brl(cot);
+  const and=S.etapas.filter(e=>e.status==="andamento").map(e=>e.nome);
+  $("sub").textContent = !S.ready.e ? "Carregando dados da obra…" : (and.length? "Em andamento: "+and.slice(0,3).join(", ")+(and.length>3?"…":"") : `${done} de ${tot} etapas concluídas`);
+}
+
+function orcCard(o,{best=false,showEtapa=true}={}){
+  const e=etapaById(o.etapaId);
+  return `<div class="orc ${best?"best":""}">
+    <div class="orc-top"><strong>${esc(o.item||"Orçamento")}</strong><span class="orc-val num">${brl2(o.valor)}</span></div>
+    <div class="orc-sub">
+      <span class="pill p-${o.status}">${ORC_ST[o.status]||o.status}</span>
+      ${best?'<span class="best-tag">Menor valor</span>':""}
+      ${o.fornecedor?`<span><b>${esc(o.fornecedor)}</b></span>`:""}
+      ${o.local?`<span>Local: ${esc(o.local)}</span>`:""}
+    </div>
+    <div class="orc-sub">
+      ${showEtapa&&e?`<span>Etapa: ${esc(e.nome)}</span>`:""}
+      ${o.contato?`<span>Contato: ${esc(o.contato)}</span>`:""}
+      ${o.data?`<span>${fdate(o.data)}</span>`:""}
+      ${o.prazo?`<span>Prazo: ${esc(o.prazo)}</span>`:""}
+    </div>
+    ${o.obs?`<p class="obs">${esc(o.obs)}</p>`:""}
+    ${o.link?`<div class="orc-sub"><a href="${esc(o.link)}" target="_blank" rel="noopener">Abrir proposta/link</a></div>`:""}
+    ${S.canWrite?`<div class="actions"><button class="btn" data-act="edit-orc" data-id="${o.id}">Editar</button>
+      ${o.status==="cotado"?`<button class="btn" data-act="orc-st" data-st="aprovado" data-id="${o.id}">Aprovar</button>`:""}
+      ${o.status==="aprovado"?`<button class="btn" data-act="orc-st" data-st="pago" data-id="${o.id}">Marcar pago</button>`:""}
+    </div>`:""}
+  </div>`;
+}
+
+function viewEtapas(){
+  if(!S.ready.e) return `<div class="empty"><strong>Carregando etapas</strong><span>Buscando o andamento da obra.</span></div>`;
+  if(!S.etapas.length) return `<div class="empty"><strong>Nenhuma etapa ainda</strong><span>Cadastre as etapas da obra para acompanhar o que falta e o que já foi feito.</span>${S.canWrite?'<div class="actions"><button class="btn primary" data-act="seed">Carregar as 28 etapas padrão</button><button class="btn" data-act="new-etapa">+ Adicionar etapa</button></div>':""}</div>`;
+  const fases=[...FASES, ...new Set(S.etapas.map(e=>e.fase).filter(f=>!FASES.includes(f)))];
+  let h="";
+  for(const f of fases){
+    const list=S.etapas.filter(e=>e.fase===f).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    if(!list.length) continue;
+    const d=list.filter(e=>e.status==="concluido").length;
+    h+=`<section class="fase"><div class="fase-h"><h2>${esc(f)}</h2><small class="num">${d}/${list.length} concluídas</small></div>`;
+    for(const e of list){
+      const os=orcsOf(e.id), c=contrOf(e.id), open=S.open.has(e.id);
+      const sub=[ETAPA_ST[e.status], os.length?`${os.length} orçamento${os.length>1?"s":""}`:"", e.previsao?`prev. ${fdate(e.previsao)}`:""].filter(Boolean).join(" · ");
+      h+=`<article class="etapa">
+        <div class="etapa-row">
+          <button class="chk" data-s="${e.status}" data-act="cycle" data-id="${e.id}" aria-label="Status: ${ETAPA_ST[e.status]}. Tocar para mudar" ${S.canWrite?"":"disabled"}>${e.status==="concluido"?CHECK:e.status==="andamento"?`<span style="color:var(--warn)">${DOTS}</span>`:""}</button>
+          <button class="etapa-name ${e.status==="concluido"?"done":""}" data-act="toggle" data-id="${e.id}" aria-expanded="${open}"><strong>${esc(e.nome)}</strong><small>${esc(sub)}</small></button>
+          <span class="etapa-val num">${c?brl(c):""}</span>
+        </div>
+        ${open?detailEtapa(e,os):""}
+      </article>`;
+    }
+    h+=`</section>`;
+  }
+  if(S.canWrite) h+=`<button class="add-etapa" data-act="new-etapa">+ Adicionar etapa</button>`;
+  return h;
+}
+
+function detailEtapa(e,os){
+  const valid=os.filter(o=>o.status!=="recusado"&&o.valor>0);
+  const min=valid.length>1?Math.min(...valid.map(o=>o.valor)):null;
+  const sorted=[...os].sort((a,b)=>(a.valor||0)-(b.valor||0));
+  return `<div class="detail">
+    ${S.canWrite?`<div class="statusset">${Object.entries(ETAPA_ST).map(([k,v])=>`<button data-act="set-st" data-id="${e.id}" data-st="${k}" aria-pressed="${e.status===k}">${v}</button>`).join("")}</div>`:""}
+    <div class="meta">
+      ${e.responsavel?`<span>Responsável: <b>${esc(e.responsavel)}</b></span>`:""}
+      ${e.previsao?`<span>Previsão: <b>${fdate(e.previsao)}</b></span>`:""}
+      ${e.previsto?`<span>Verba prevista: <b class="num">${brl(e.previsto)}</b></span>`:""}
+      <span>Contratado: <b class="num">${brl(contrOf(e.id))}</b></span>
+    </div>
+    ${e.obs?`<p class="obs">${esc(e.obs)}</p>`:""}
+    <div class="inner-list">${sorted.length?sorted.map(o=>orcCard(o,{best:min!==null&&o.valor===min&&o.status!=="recusado",showEtapa:false})).join(""):'<span style="font-size:13px;color:var(--muted)">Nenhum orçamento cadastrado para esta etapa.</span>'}</div>
+    ${S.canWrite?`<div class="actions"><button class="btn primary" data-act="new-orc" data-etapa="${e.id}">+ Orçamento</button><button class="btn" data-act="edit-etapa" data-id="${e.id}">Editar etapa</button></div>`:""}
+  </div>`;
+}
+
+function viewOrc(){
+  if(!S.ready.o) return `<div class="empty"><strong>Carregando orçamentos</strong></div>`;
+  const filters=[["todos","Todos"],["cotado","Cotados"],["aprovado","Aprovados"],["pago","Pagos"],["recusado","Recusados"]];
+  let list=S.orcs.slice();
+  if(S.filter!=="todos") list=list.filter(o=>o.status===S.filter);
+  const q=S.q.trim().toLowerCase();
+  if(q) list=list.filter(o=>[o.item,o.fornecedor,o.local,o.obs,etapaById(o.etapaId)?.nome].join(" ").toLowerCase().includes(q));
+  list.sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criadoEm||0)-(a.criadoEm||0));
+  const total=list.reduce((a,o)=>a+(o.valor||0),0);
+  let h=`<div class="toolbar">
+    <div class="chips">${filters.map(([k,v])=>`<button class="chip" data-act="filter" data-f="${k}" aria-pressed="${S.filter===k}">${v}</button>`).join("")}</div>
+    <input class="search" id="q" type="search" placeholder="Buscar item, fornecedor, loja…" value="${esc(S.q)}">
+  </div>`;
+  if(!S.orcs.length) return h+`<div class="empty"><strong>Nenhum orçamento ainda</strong><span>Registre cada cotação com valor, fornecedor e local. Depois compare, aprove e marque como pago.</span>${S.canWrite?'<button class="btn primary" data-act="new-orc">+ Primeiro orçamento</button>':""}</div>`;
+  h+=`<div class="list"><div style="font-size:13px;color:var(--muted);margin-bottom:8px" class="num">${list.length} orçamento(s) · ${brl2(total)}</div>${list.map(o=>orcCard(o)).join("")||'<div class="empty">Nada encontrado com esse filtro.</div>'}</div>`;
+  return h;
+}
+
+function viewResumo(){
+  const fases=[...FASES, ...new Set(S.etapas.map(e=>e.fase).filter(f=>!FASES.includes(f)))];
+  let rows="", T={prev:0,contr:0,pago:0,cot:0};
+  for(const f of fases){
+    const es=S.etapas.filter(e=>e.fase===f); if(!es.length) continue;
+    const ids=new Set(es.map(e=>e.id)); const os=S.orcs.filter(o=>ids.has(o.etapaId));
+    const prev=es.reduce((a,e)=>a+(e.previsto||0),0), contr=os.filter(isContr).reduce((a,o)=>a+o.valor,0), pago=os.filter(o=>o.status==="pago").reduce((a,o)=>a+o.valor,0);
+    T.prev+=prev;T.contr+=contr;T.pago+=pago;
+    rows+=`<tr><td>${esc(f)}</td><td class="num">${prev?brl(prev):"–"}</td><td class="num ${prev&&contr>prev?"over":""}">${brl(contr)}</td><td class="num">${brl(pago)}</td><td class="num">${brl(contr-pago)}</td></tr>`;
+  }
+  const pend=S.etapas.filter(e=>e.status!=="concluido").sort((a,b)=>(a.status==="andamento"?-1:0)-(b.status==="andamento"?-1:0)||(a.previsao||"9").localeCompare(b.previsao||"9"));
+  const aPagar=S.orcs.filter(o=>o.status==="aprovado");
+  return `<h3 class="sec-h">Financeiro por fase</h3>
+  <div class="table-wrap"><table><thead><tr><th>Fase</th><th>Previsto</th><th>Contratado</th><th>Pago</th><th>A pagar</th></tr></thead>
+  <tbody>${rows}</tbody><tfoot><tr><td>Total</td><td class="num">${T.prev?brl(T.prev):"–"}</td><td class="num">${brl(T.contr)}</td><td class="num">${brl(T.pago)}</td><td class="num">${brl(T.contr-T.pago)}</td></tr></tfoot></table></div>
+  <h3 class="sec-h">Pagamentos pendentes (aprovados)</h3>
+  ${aPagar.length?`<ul class="next">${aPagar.map(o=>`<li><span>${esc(o.item)}${o.fornecedor?" · "+esc(o.fornecedor):""}</span><b class="num">${brl2(o.valor)}</b></li>`).join("")}</ul>`:'<p style="color:var(--muted);font-size:14px">Nenhum orçamento aprovado aguardando pagamento.</p>'}
+  <h3 class="sec-h">O que falta fazer (${pend.length})</h3>
+  ${pend.length?`<ul class="next">${pend.map(e=>`<li><span>${esc(e.nome)} <span class="pill p-${e.status}">${ETAPA_ST[e.status]}</span></span><span style="color:var(--muted)">${e.previsao?fdate(e.previsao):""}</span></li>`).join("")}</ul>`:'<p>Todas as etapas concluídas.</p>'}`;
+}
+
+function render(){
+  renderHeader();
+  const v=$("view");
+  const qFocused=document.activeElement&&document.activeElement.id==="q";
+  v.innerHTML = S.view==="etapas"?viewEtapas():S.view==="orc"?viewOrc():S.view==="equipe"?viewEquipe():viewResumo();
+  $("tab-equipe").hidden=!S.isAdmin;
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===S.view));
+  $("fab").hidden=!S.canWrite||!S.db;
+  if(qFocused){const q=$("q"); if(q){q.focus(); q.setSelectionRange(q.value.length,q.value.length);}}
+}
+
+/* ---------- Formulários ---------- */
+function closeModal(){ $("modal").innerHTML=""; S.confirmDel=null; }
+function etapaOptions(sel){
+  const fases=[...FASES, ...new Set(S.etapas.map(e=>e.fase).filter(f=>!FASES.includes(f)))];
+  return fases.map(f=>{const es=S.etapas.filter(e=>e.fase===f).sort((a,b)=>(a.ordem||0)-(b.ordem||0)); return es.length?`<optgroup label="${esc(f)}">${es.map(e=>`<option value="${e.id}" ${e.id===sel?"selected":""}>${esc(e.nome)}</option>`).join("")}</optgroup>`:""}).join("");
+}
+function openOrcForm(o,etapaId){
+  const ed=!!o; o=o||{status:"cotado",etapaId:etapaId||"",data:new Date().toISOString().slice(0,10)};
+  $("modal").innerHTML=`<div class="scrim" data-act="scrim"><form class="sheet" id="f-orc" novalidate>
+    <h3>${ed?"Editar orçamento":"Novo orçamento"}</h3>
+    <div class="field"><label for="o-item">Item / serviço</label><input id="o-item" required placeholder="Ex.: Porcelanato 120x120 sala e quartos" value="${esc(o.item)}"></div>
+    <div class="field"><label for="o-etapa">Etapa da obra</label><select id="o-etapa">${etapaOptions(o.etapaId)}</select></div>
+    <div class="grid2">
+      <div class="field"><label for="o-valor">Valor (R$)</label><input id="o-valor" inputmode="decimal" placeholder="0,00" value="${o.valor!=null?esc(String(o.valor).replace(".",",")):""}"></div>
+      <div class="field"><label for="o-status">Status</label><select id="o-status">${Object.entries(ORC_ST).map(([k,v])=>`<option value="${k}" ${o.status===k?"selected":""}>${v}</option>`).join("")}</select></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="o-forn">Fornecedor</label><input id="o-forn" placeholder="Loja ou prestador" value="${esc(o.fornecedor)}"></div>
+      <div class="field"><label for="o-local">Local</label><input id="o-local" placeholder="Ex.: Av. Washington Soares, Fortaleza" value="${esc(o.local)}"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="o-contato">Contato</label><input id="o-contato" placeholder="Nome / telefone" value="${esc(o.contato)}"></div>
+      <div class="field"><label for="o-data">Data do orçamento</label><input id="o-data" type="date" value="${esc(o.data)}"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="o-prazo">Prazo de entrega / execução</label><input id="o-prazo" placeholder="Ex.: 15 dias" value="${esc(o.prazo)}"></div>
+      <div class="field"><label for="o-link">Link da proposta (opcional)</label><input id="o-link" type="url" placeholder="https://" value="${esc(o.link)}"></div>
+    </div>
+    <div class="field"><label for="o-obs">Observações</label><textarea id="o-obs" placeholder="Condições de pagamento, marca, o que inclui…">${esc(o.obs)}</textarea></div>
+    <p class="err" id="o-err" hidden></p>
+    <div id="o-confirm"></div>
+    <div class="actions"><button class="btn primary" type="submit">Salvar</button><button class="btn ghost" type="button" data-act="close">Cancelar</button>
+    ${ed?`<button class="btn danger" type="button" data-act="ask-del-orc" style="margin-left:auto">Excluir</button>`:""}</div>
+  </form></div>`;
+  const f=$("f-orc");
+  f.onsubmit=async ev=>{ev.preventDefault();
+    const item=$("o-item").value.trim(), err=$("o-err");
+    if(!item){err.textContent="Informe o item ou serviço.";err.hidden=false;return;}
+    if(!$("o-etapa").value){err.textContent="Escolha a etapa da obra.";err.hidden=false;return;}
+    const body={item,etapaId:$("o-etapa").value,valor:parseValor($("o-valor").value),status:$("o-status").value,fornecedor:$("o-forn").value.trim(),local:$("o-local").value.trim(),contato:$("o-contato").value.trim(),data:$("o-data").value,prazo:$("o-prazo").value.trim(),link:$("o-link").value.trim(),obs:$("o-obs").value.trim(),criadoEm:o.criadoEm||Date.now()};
+    try{ if(ed) await S.db.collection("orcamentos").doc(o.id).set(body); else await S.db.collection("orcamentos").add(body);
+      closeModal(); toast(ed?"Orçamento atualizado":"Orçamento salvo"); }
+    catch(e){ err.textContent=writeErr(e); err.hidden=false; }
+  };
+  f.dataset.id=o.id||"";
+}
+function openEtapaForm(e){
+  const ed=!!e; e=e||{status:"pendente",fase:"Acabamentos"};
+  const fases=[...FASES, ...new Set(S.etapas.map(x=>x.fase).filter(f=>!FASES.includes(f)))];
+  $("modal").innerHTML=`<div class="scrim" data-act="scrim"><form class="sheet" id="f-et" novalidate>
+    <h3>${ed?"Editar etapa":"Nova etapa"}</h3>
+    <div class="field"><label for="e-nome">Nome da etapa</label><input id="e-nome" value="${esc(e.nome)}" placeholder="Ex.: Instalação de porta pivotante"></div>
+    <div class="grid2">
+      <div class="field"><label for="e-fase">Fase</label><select id="e-fase">${fases.map(f=>`<option ${e.fase===f?"selected":""}>${esc(f)}</option>`).join("")}</select></div>
+      <div class="field"><label for="e-status">Status</label><select id="e-status">${Object.entries(ETAPA_ST).map(([k,v])=>`<option value="${k}" ${e.status===k?"selected":""}>${v}</option>`).join("")}</select></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="e-resp">Responsável</label><input id="e-resp" value="${esc(e.responsavel)}" placeholder="Equipe ou empresa"></div>
+      <div class="field"><label for="e-prev">Previsão de término</label><input id="e-prev" type="date" value="${esc(e.previsao)}"></div>
+    </div>
+    <div class="field"><label for="e-verba">Verba prevista (R$)</label><input id="e-verba" inputmode="decimal" value="${e.previsto?esc(String(e.previsto).replace(".",",")):""}" placeholder="Opcional"></div>
+    <div class="field"><label for="e-obs">Observações</label><textarea id="e-obs" placeholder="Especificações, pendências, decisões do cliente…">${esc(e.obs)}</textarea></div>
+    <p class="err" id="e-err" hidden></p>
+    <div id="e-confirm"></div>
+    <div class="actions"><button class="btn primary" type="submit">Salvar</button><button class="btn ghost" type="button" data-act="close">Cancelar</button>
+    ${ed?`<button class="btn danger" type="button" data-act="ask-del-etapa" style="margin-left:auto">Excluir</button>`:""}</div>
+  </form></div>`;
+  const f=$("f-et"); f.dataset.id=e.id||"";
+  f.onsubmit=async ev=>{ev.preventDefault();
+    const nome=$("e-nome").value.trim(), err=$("e-err");
+    if(!nome){err.textContent="Informe o nome da etapa.";err.hidden=false;return;}
+    const fase=$("e-fase").value;
+    const maxOrd=Math.max(0,...S.etapas.filter(x=>x.fase===fase).map(x=>x.ordem||0));
+    const body={nome,fase,status:$("e-status").value,responsavel:$("e-resp").value.trim(),previsao:$("e-prev").value,previsto:parseValor($("e-verba").value),obs:$("e-obs").value.trim(),ordem:ed&&e.fase===fase?e.ordem:maxOrd+1};
+    try{ if(ed) await S.db.collection("etapas").doc(e.id).set(body); else await S.db.collection("etapas").add(body);
+      closeModal(); toast(ed?"Etapa atualizada":"Etapa adicionada"); }
+    catch(x){ err.textContent=writeErr(x); err.hidden=false; }
+  };
+}
+function writeErr(e){
+  if(e&&e.code==="permission-denied") return "Seu usuário não tem permissão para editar. Peça ao administrador para mudar seu acesso para Editor.";
+  if(e&&e.code==="resource-exhausted") return "Limite do plano gratuito atingido por hoje. Tente novamente amanhã.";
+  return "Não foi possível salvar agora. Verifique a conexão e tente de novo.";
+}
+
+/* ---------- Eventos ---------- */
+document.addEventListener("click",async ev=>{
+  const t=ev.target.closest("[data-act],.tab"); if(!t) return;
+  if(t.classList.contains("tab")){S.view=t.dataset.v;render();window.scrollTo({top:0});return;}
+  const a=t.dataset.act, id=t.dataset.id;
+  if(a==="scrim"){ if(ev.target===t) closeModal(); return; }
+  if(a==="close") return closeModal();
+  if(a==="toggle"){S.open.has(id)?S.open.delete(id):S.open.add(id);render();return;}
+  if(a==="filter"){S.filter=t.dataset.f;render();return;}
+  if(!S.db) return;
+  try{
+    if(a==="cycle"){const e=etapaById(id);const order=["pendente","andamento","concluido"];const nx=order[(order.indexOf(e.status)+1)%3];await S.db.collection("etapas").doc(id).update({status:nx});toast(`${e.nome}: ${ETAPA_ST[nx]}`);}
+    if(a==="set-st"){await S.db.collection("etapas").doc(id).update({status:t.dataset.st});}
+    if(a==="orc-st"){await S.db.collection("orcamentos").doc(id).update({status:t.dataset.st});toast(t.dataset.st==="pago"?"Marcado como pago":"Orçamento aprovado");}
+  }catch(e){toast(writeErr(e));}
+  if(a==="new-orc"){ if(!S.etapas.length){toast("Cadastre uma etapa primeiro");return;} openOrcForm(null,t.dataset.etapa); }
+  if(a==="edit-orc") openOrcForm(S.orcs.find(o=>o.id===id));
+  if(a==="new-etapa") openEtapaForm(null);
+  if(a==="edit-etapa") openEtapaForm(etapaById(id));
+  if(a==="ask-del-orc"){ $("o-confirm").innerHTML=`<div class="confirm">Excluir este orçamento de vez?<div class="actions"><button class="btn danger" type="button" data-act="del-orc">Sim, excluir</button><button class="btn ghost" type="button" data-act="close">Não</button></div></div>`; }
+  if(a==="del-orc"){ const oid=$("f-orc").dataset.id; try{await S.db.collection("orcamentos").doc(oid).delete();closeModal();toast("Orçamento excluído");}catch(e){toast(writeErr(e));} }
+  if(a==="ask-del-etapa"){ const eid=$("f-et").dataset.id; const n=orcsOf(eid).length; $("e-confirm").innerHTML=`<div class="confirm">Excluir esta etapa${n?` e os ${n} orçamento(s) ligados a ela`:""}?<div class="actions"><button class="btn danger" type="button" data-act="del-etapa">Sim, excluir</button><button class="btn ghost" type="button" data-act="close">Não</button></div></div>`; }
+  if(a==="del-etapa"){ const eid=$("f-et").dataset.id; try{ for(const o of orcsOf(eid)) await S.db.collection("orcamentos").doc(o.id).delete(); await S.db.collection("etapas").doc(eid).delete(); S.open.delete(eid); closeModal(); toast("Etapa excluída"); }catch(e){toast(writeErr(e));} }
+});
+document.addEventListener("input",ev=>{ if(ev.target.id==="q"){S.q=ev.target.value;render();} });
+document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&$("modal").innerHTML) closeModal(); });
+$("fab").onclick=()=>{ if(!S.etapas.length){toast("Cadastre uma etapa primeiro");return;} openOrcForm(null); };
+
+/* ---------- Equipe (admin) ---------- */
+const PAPEIS={admin:"Administrador",editor:"Editor",leitor:"Somente leitura"};
+function viewEquipe(){
+  if(!S.isAdmin) return "";
+  const list=S.membros.slice().sort((a,b)=>a.id.localeCompare(b.id));
+  return `<h3 class="sec-h">Quem acessa a obra</h3>
+  <p style="font-size:13.5px;color:var(--muted);margin:0 0 10px">Editores lançam e alteram etapas e orçamentos. Somente leitura apenas consulta. Administradores também gerenciam a equipe.</p>
+  <div class="membro"><strong>${esc(ADMIN_EMAIL)}</strong><span class="pill p-concluido" style="justify-self:start">Administrador principal</span></div>
+  ${list.filter(m=>m.id!==ADMIN_EMAIL).map(m=>`<div class="membro">
+    <strong>${esc(m.nome||m.id)}</strong>
+    <span style="font-size:13px;color:var(--muted)">${esc(m.id)}</span>
+    <div class="actions" style="align-items:center">
+      <select data-papel="${esc(m.id)}" aria-label="Nível de acesso">${Object.entries(PAPEIS).map(([k,v])=>`<option value="${k}" ${m.papel===k?"selected":""}>${v}</option>`).join("")}</select>
+      <button class="btn danger" data-act="rm-membro" data-id="${esc(m.id)}">Remover acesso</button>
+    </div></div>`).join("")}
+  <h3 class="sec-h">Adicionar pessoa</h3>
+  <form class="sheet" id="f-membro" style="border-radius:var(--r);border:1px solid var(--line)" novalidate>
+    <div class="field"><label for="m-nome">Nome</label><input id="m-nome" placeholder="Ex.: João (mestre de obras)"></div>
+    <div class="field"><label for="m-email">E-mail (será o login)</label><input id="m-email" type="email" autocomplete="off"></div>
+    <div class="grid2">
+      <div class="field"><label for="m-senha">Senha inicial</label><input id="m-senha" type="text" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>
+      <div class="field"><label for="m-papel">Acesso</label><select id="m-papel"><option value="editor">Editor</option><option value="leitor">Somente leitura</option><option value="admin">Administrador</option></select></div>
+    </div>
+    <p class="err" id="m-err" hidden></p>
+    <div class="actions"><button class="btn primary" type="submit">Criar acesso</button></div>
+  </form>`;
+}
+document.addEventListener("change",async ev=>{
+  const id=ev.target.dataset&&ev.target.dataset.papel; if(!id) return;
+  try{await S.db.collection("usuarios").doc(id).update({papel:ev.target.value});toast("Acesso atualizado");}catch(e){toast(writeErr(e));}
+});
+document.addEventListener("submit",async ev=>{
+  if(ev.target.id!=="f-membro") return; ev.preventDefault();
+  const err=$("m-err"); err.hidden=true;
+  const email=$("m-email").value.trim().toLowerCase(), senha=$("m-senha").value, nome=$("m-nome").value.trim(), papel=$("m-papel").value;
+  if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent="Informe um e-mail válido.";err.hidden=false;return;}
+  if(senha.length<6){err.textContent="A senha precisa ter pelo menos 6 caracteres.";err.hidden=false;return;}
+  // App secundário: cria o login sem desconectar o administrador
+  const sec = firebase.apps.find(a=>a.name==="cadastro") || firebase.initializeApp(firebaseConfig,"cadastro");
+  try{
+    try{ await sec.auth().createUserWithEmailAndPassword(email,senha); }
+    catch(e){ if(e.code!=="auth/email-already-in-use") throw e; }
+    await sec.auth().signOut();
+    await S.db.collection("usuarios").doc(email).set({nome,papel,criadoEm:Date.now()});
+    toast("Acesso criado para "+email);
+  }catch(e){
+    err.textContent = e.code==="auth/weak-password"?"Senha fraca. Use pelo menos 6 caracteres.":e.code==="auth/invalid-email"?"E-mail inválido.":writeErr(e);
+    err.hidden=false;
+  }
+});
+
+/* ---------- Seed ---------- */
+async function seedEtapas(){
+  const b=S.db.batch();
+  for(const [id,nome,fase,status,ordem] of SEED) b.set(S.db.collection("etapas").doc(id),{nome,fase,status,ordem,responsavel:"",previsao:"",previsto:0,obs:""});
+  await b.commit(); toast("Etapas carregadas");
+}
+document.addEventListener("click",async ev=>{
+  const t=ev.target.closest("[data-act]"); if(!t) return;
+  if(t.dataset.act==="seed"){ try{await seedEtapas();}catch(e){toast(writeErr(e));} }
+  if(t.dataset.act==="rm-membro"){
+    if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Toque de novo para confirmar";return;}
+    try{await S.db.collection("usuarios").doc(t.dataset.id).delete();toast("Acesso removido");}catch(e){toast(writeErr(e));}
+  }
+});
+
+/* ---------- Login e dados ---------- */
+let unsub=[];
+S.membros=[]; S.isAdmin=false;
+const configOk = !String(firebaseConfig.apiKey).includes("COLE");
+if(!configOk){
+  document.body.innerHTML='<div class="wrap" style="padding-top:40px"><div class="banner">Falta configurar o Firebase: edite o bloco <b>firebaseConfig</b> no início do script deste arquivo.</div></div>';
+} else {
+  firebase.initializeApp(firebaseConfig);
+  const auth=firebase.auth();
+  S.db=firebase.firestore();
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+
+  $("f-login").addEventListener("submit",async ev=>{
+    ev.preventDefault();
+    const err=$("l-err"); err.hidden=true; $("l-ok").hidden=true;
+    const btn=$("l-btn"); btn.disabled=true; btn.textContent="Entrando…";
+    try{ await auth.signInWithEmailAndPassword($("l-email").value.trim(),$("l-senha").value); }
+    catch(e){
+      err.textContent = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-login-credentials"].includes(e.code)?"E-mail ou senha incorretos.":e.code==="auth/too-many-requests"?"Muitas tentativas. Aguarde alguns minutos e tente de novo.":e.code==="auth/network-request-failed"?"Sem conexão com a internet.":"Não foi possível entrar ("+e.code+").";
+      err.hidden=false;
+    } finally { btn.disabled=false; btn.textContent="Entrar"; }
+  });
+  $("l-reset").onclick=async()=>{
+    const email=$("l-email").value.trim(), err=$("l-err"), ok=$("l-ok"); err.hidden=true; ok.hidden=true;
+    if(!email){err.textContent="Digite seu e-mail acima e toque de novo em “Esqueci minha senha”.";err.hidden=false;return;}
+    try{await auth.sendPasswordResetEmail(email);}catch(e){}
+    ok.textContent="Se esse e-mail tiver acesso, você vai receber um link para criar nova senha.";ok.hidden=false;
+  };
+  $("logout").onclick=()=>auth.signOut();
+
+  auth.onAuthStateChanged(async u=>{
+    unsub.forEach(f=>f()); unsub=[];
+    S.etapas=[];S.orcs=[];S.membros=[];S.ready={e:false,o:false};S.isAdmin=false;S.canWrite=false;
+    $("banner").innerHTML="";
+    if(!u){ $("app").hidden=true; $("login").hidden=false; $("fab").hidden=true; return; }
+    $("login").hidden=true; $("app").hidden=false;
+    const email=(u.email||"").toLowerCase();
+    $("who").textContent=email;
+    let papel=null;
+    if(email===ADMIN_EMAIL.toLowerCase()) papel="admin";
+    else { try{ const d=await S.db.collection("usuarios").doc(email).get(); papel=d.exists?d.data().papel:null; }catch(e){ papel=null; } }
+    if(!papel){
+      $("banner").innerHTML='<div class="banner">Seu login ainda não tem acesso a esta obra. Peça ao administrador para liberar o seu e-mail.</div>';
+      S.ready={e:true,o:true}; $("view").innerHTML=""; renderHeader(); $("fab").hidden=true; return;
+    }
+    S.isAdmin = papel==="admin"; S.canWrite = papel==="admin"||papel==="editor";
+    if(papel==="leitor") $("banner").innerHTML='<div class="banner">Você está vendo a obra em modo leitura.</div>';
+    const fail=e=>{ $("banner").innerHTML='<div class="banner">'+(e.code==="permission-denied"?"Sem permissão para ver estes dados.":"A conexão com os dados caiu. Recarregue a página.")+'</div>'; };
+    unsub.push(S.db.collection("etapas").onSnapshot(s=>{S.etapas=s.docs.map(d=>({id:d.id,...d.data()}));S.ready.e=true;render();},fail));
+    unsub.push(S.db.collection("orcamentos").onSnapshot(s=>{S.orcs=s.docs.map(d=>({id:d.id,...d.data()}));S.ready.o=true;render();},fail));
+    if(S.isAdmin) unsub.push(S.db.collection("usuarios").onSnapshot(s=>{S.membros=s.docs.map(d=>({id:d.id,...d.data()}));if(S.view==="equipe")render();},()=>{}));
+    render();
+  });
+}
+</script>
+</body>
+</html>
